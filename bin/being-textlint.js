@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 
 const { spawn } = require("node:child_process");
-const { join } = require("node:path");
+const { dirname, join } = require("node:path");
 
 const packageRoot = join(__dirname, "..");
 const textlint = require.resolve("textlint/bin/textlint.js");
+const rulesBaseDirectory = dirname(dirname(require.resolve("textlint/package.json")));
 const child = spawn(
   process.execPath,
   [
@@ -12,7 +13,7 @@ const child = spawn(
     "--config",
     join(packageRoot, "textlintrc.json"),
     "--rules-base-directory",
-    join(packageRoot, "node_modules"),
+    rulesBaseDirectory,
     ...process.argv.slice(2)
   ],
   { stdio: "inherit" }
