@@ -49,6 +49,15 @@
     },
     "prh": {
       "rulePaths": ["./prh.yml"]
+    },
+    "@being/ai-phrases": true,
+    "preset-slopless": true,
+    "@textlint-ja/preset-ai-writing": {
+      "no-ai-list-formatting": true,
+      "no-ai-hype-expressions": true,
+      "no-ai-emphasis-patterns": true,
+      "ai-tech-writing-guideline": { "severity": "info" },
+      "no-ai-colon-continuation": true
     }
   }
 }
