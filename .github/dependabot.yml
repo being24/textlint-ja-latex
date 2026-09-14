@@ -1,0 +1,22 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+    target-branch: master
+    open-pull-requests-limit: 10
+    assignees:
+      - being24
+    cooldown:
+      default-days: 3
+      semver-patch-days: 1
+    groups:
+      npm-all:
+        applies-to: version-updates
+        patterns:
+          - "*"
+      npm-security:
+        applies-to: security-updates
+        patterns:
+          - "*"
