@@ -52,3 +52,29 @@ test("回りくどい分析口調のAI定型句を検出する", () => {
     "AI定型句「アーティファクト」: 「特性」「癖」「混入」等、具体的な言葉に置き換える"
   ]);
 });
+
+test("節番号の括弧補足・独立性のぼかし・口語的言い回しを検出する", () => {
+  const messages = [];
+  const handlers = rule({
+    Syntax: { Str: "Str", Paragraph: "Paragraph" },
+    RuleError: class RuleError {
+      constructor(message) {
+        this.message = message;
+      }
+    },
+    getSource: (node) => node.text,
+    report: (_, error) => messages.push(error.message)
+  });
+  handlers.Str({ text: "高いLOSO精度で得られた（第\\ref{sec:pebble-presence}節）。" });
+  handlers.Str({ text: "摩耗状態や細かいペブル種別までの区別は，この交絡から独立できなかった。" });
+  handlers.Str({ text: "粗い区分ほど頑健であるという一貫した傾向が見える。" });
+  handlers.Str({ text: "現在の慣性センシングチャンネルと特徴量セットからは回収できない。" });
+  handlers.Str({ text: "被験者を高い精度で言い当てられてしまった。" });
+  assert.deepEqual(messages, [
+    "AI定型句「（第\\ref{sec:pebble-presence}節）」: 節番号の括弧補足をやめ、地の文に「第N節で示すとおり」のように組み込む",
+    "AI定型句「から独立できなかった」: 「〜から独立できなかった」を避け、「〜の影響を受けていた」等の具体的な言い方にする",
+    "AI定型句「一貫した傾向」: 「一貫した傾向」を避け、観測された関係をそのまま書く",
+    "AI定型句「回収できない」: 「回収できない」を避け、「検出できない」等の具体的な動詞にする",
+    "AI定型句「言い当てられてしまった」: 口語的な「てしまう」を避け、「判別できた」等の中立的な表現にする"
+  ]);
+});
