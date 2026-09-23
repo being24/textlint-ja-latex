@@ -106,3 +106,29 @@ test("節番号の括弧補足・独立性のぼかし・口語的言い回し�
     "AI定型句「言い当てられてしまった」: 口語的な「てしまう」を避け、「判別できた」等の中立的な表現にする"
   ]);
 });
+
+test("評価語の乱用・硬い言い回し・独自造語を検出する", () => {
+  const messages = [];
+  const handlers = rule({
+    Syntax: { Str: "Str", Paragraph: "Paragraph" },
+    RuleError: class RuleError {
+      constructor(message) {
+        this.message = message;
+      }
+    },
+    getSource: (node) => node.text,
+    report: (_, error) => messages.push(error.message)
+  });
+  handlers.Str({ text: "粗い氷面条件を短い時間窓でも頑健に識別できるかを検証した。" });
+  handlers.Str({ text: "Extra-FineとCoarse-Fineという2条件は個人差非依存でも本質的に区別困難である。" });
+  handlers.Str({ text: "これらの結果は，元の限界の範囲を画定する。" });
+  handlers.Str({ text: "Extra-Fine対Coarse-Fineの直接判別は未解決である。" });
+  handlers.Str({ text: "速度不変表現が有効かを確認した。" });
+  assert.deepEqual(messages, [
+    "AI定型句「頑健に」: 「頑健に」という評価語を避け、具体的にどの程度・どう安定しているかを書く",
+    "AI定型句「本質的に」: 「本質的に」という強調語を避け、何がどうであるかを直接書く",
+    "AI定型句「画定する」: 「画定する」という硬い言い回しを避け、「示す」「絞り込む」等の平易な動詞にする",
+    "AI定型句「直接判別」: 「直接」という修飾が必要か確認し、不要なら削って「判別」とする",
+    "AI定型句「速度不変表現」: 「速度不変表現」という独自の複合語を避け、何を指すか平易に言い換える"
+  ]);
+});
