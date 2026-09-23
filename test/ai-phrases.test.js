@@ -53,6 +53,34 @@ test("回りくどい分析口調のAI定型句を検出する", () => {
   ]);
 });
 
+test("評価語による断定・独自の意味づけを検出する", () => {
+  const messages = [];
+  const handlers = rule({
+    Syntax: { Str: "Str", Paragraph: "Paragraph" },
+    RuleError: class RuleError {
+      constructor(message) {
+        this.message = message;
+      }
+    },
+    getSource: (node) => node.text,
+    report: (_, error) => messages.push(error.message)
+  });
+  handlers.Str({ text: "この結果は示唆に富む。" });
+  handlers.Str({ text: "重要な示唆を与えるものである。" });
+  handlers.Str({ text: "そこから深い洞察が得られた。" });
+  handlers.Str({ text: "この観測は重大な意味を持つ。" });
+  handlers.Str({ text: "本稿は画期的な手法を提案する。" });
+  handlers.Str({ text: "これは革新的なアプローチである。" });
+  assert.deepEqual(messages, [
+    "AI定型句「示唆に富む」: 評価語ではなく、観測結果から何が言えるかを書く",
+    "AI定型句「重要な示唆」: 評価語ではなく、観測結果から何が言えるかを書く",
+    "AI定型句「深い洞察」: 洞察の具体的な内容を書く",
+    "AI定型句「重大な意味を持つ」: どの結果が何に与える意味かを書く",
+    "AI定型句「画期的な手法」: 新規性を評価語で断定せず、既存手法との差を書く",
+    "AI定型句「革新的なアプローチ」: 新規性を評価語で断定せず、既存手法との差を書く"
+  ]);
+});
+
 test("節番号の括弧補足・独立性のぼかし・口語的言い回しを検出する", () => {
   const messages = [];
   const handlers = rule({
