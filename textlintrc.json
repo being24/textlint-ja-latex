@@ -50,6 +50,8 @@
     "prh": {
       "rulePaths": ["./prh.yml"]
     },
+    "@textlint-ja/no-synonyms": true,
+    "use-si-units": true,
     "@being/ai-phrases": true,
     "preset-slopless": true,
     "@textlint-ja/preset-ai-writing": {
