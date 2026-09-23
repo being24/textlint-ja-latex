@@ -1,6 +1,6 @@
 {
   "name": "being-textlint-ja-latex",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "description": "Shared textlint configuration for Japanese LaTeX documents.",
   "engines": {
@@ -17,8 +17,10 @@
   ],
   "dependencies": {
     "@being/textlint-rule-ai-phrases": "file:rules/ai-phrases",
+    "@textlint-ja/textlint-rule-no-synonyms": "^1.3.0",
     "@textlint-ja/textlint-rule-preset-ai-writing": "^1.7.0",
     "slopless": "^0.2.38",
+    "sudachi-synonyms-dictionary": "^8.0.1",
     "textlint": "^15.8.0",
     "textlint-filter-rule-allowlist": "^4.0.0",
     "textlint-filter-rule-comments": "^1.3.0",
@@ -45,6 +47,7 @@
     "textlint-rule-preset-ja-technical-writing": "^12.0.2",
     "textlint-rule-preset-jtf-style": "^3.0.3",
     "textlint-rule-prh": "^6.1.0",
-    "textlint-rule-sentence-length": "^5.2.1"
+    "textlint-rule-sentence-length": "^5.2.1",
+    "textlint-rule-use-si-units": "^2.0.0"
   }
 }
