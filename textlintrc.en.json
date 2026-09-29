@@ -1,0 +1,13 @@
+{
+  "plugins": ["latex2e"],
+  "filters": {
+    "comments": true,
+    "allowlist": {
+      "allow": ["github.com", "github.com/github/"]
+    }
+  },
+  "rules": {
+    "use-si-units": true,
+    "preset-slopless": true
+  }
+}
