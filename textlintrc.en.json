@@ -8,6 +8,7 @@
   },
   "rules": {
     "use-si-units": true,
-    "preset-slopless": true
+    "preset-slopless": true,
+    "@being/no-bold-underline": true
   }
 }

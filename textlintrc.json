@@ -53,6 +53,7 @@
     "@textlint-ja/no-synonyms": true,
     "use-si-units": true,
     "@being/ai-phrases": true,
+    "@being/no-bold-underline": true,
     "preset-slopless": true,
     "@textlint-ja/preset-ai-writing": {
       "no-ai-list-formatting": true,

@@ -1,6 +1,6 @@
 {
   "name": "being-textlint-ja-latex",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "private": true,
   "description": "Shared textlint configuration for Japanese LaTeX documents.",
   "engines": {
@@ -18,6 +18,7 @@
   ],
   "dependencies": {
     "@being/textlint-rule-ai-phrases": "file:rules/ai-phrases",
+    "@being/textlint-rule-no-bold-underline": "file:rules/no-bold-underline",
     "@textlint-ja/textlint-rule-no-synonyms": "^1.3.0",
     "@textlint-ja/textlint-rule-preset-ai-writing": "^1.7.0",
     "slopless": "^0.2.40",
