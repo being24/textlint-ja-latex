@@ -11,7 +11,7 @@ const Syntax = {
   DocumentExit: "Document:exit"
 };
 
-const lint = (text, maskedRanges = []) => {
+const lint = (text, skippedNodes = []) => {
   const reported = [];
   const handlers = rule({
     Syntax,
@@ -24,8 +24,8 @@ const lint = (text, maskedRanges = []) => {
     getSource: (node) => node.text,
     report: (_, error) => reported.push({ message: error.message, index: error.index })
   });
-  for (const range of maskedRanges) {
-    handlers.Comment({ range });
+  for (const node of skippedNodes) {
+    handlers[node.type](node);
   }
   handlers["Document:exit"]({ text });
   return reported;
@@ -43,9 +43,42 @@ test("数式の太字やイタリック強調は対象外とする", () => {
   assert.deepEqual(lint("$\\mathbf{x}$ $\\boldsymbol{\\beta}$ \\emph{a} \\textit{b} \\ulcorner \\bfdefault"), []);
 });
 
-test("コメント・コード領域の命令は検出しない", () => {
-  const text = "本文．% \\textbf{コメント}\n\\verb|\\textbf| 後";
-  assert.deepEqual(lint(text, [[3, 20], [20, 35]]), []);
+test("コメント・\\verb・verbatim の中は検出しない", () => {
+  const comment = "% \\textbf{c}\n";
+  const verb = "\\verb|\\textbf|";
+  const verbatim = "\\begin{verbatim}\n\\underline{v}\n\\end{verbatim}";
+  const text = comment + verb + "\n" + verbatim;
+  const at = (part) => [text.indexOf(part), text.indexOf(part) + part.length];
+  assert.deepEqual(
+    lint(text, [
+      { type: "Comment", text: comment, range: at(comment) },
+      { type: "Code", text: verb, range: at(verb) },
+      { type: "CodeBlock", text: verbatim, range: at(verbatim) }
+    ]),
+    []
+  );
+});
+
+test("数式の中の太字・下線命令は検出する", () => {
+  const inline = "$\\textbf{x}$";
+  const display = "\\[\n\\underline{x}\n\\]";
+  const text = inline + "\n" + display;
+  const at = (part) => [text.indexOf(part), text.indexOf(part) + part.length];
+  assert.equal(
+    lint(text, [
+      { type: "Code", text: inline, range: at(inline) },
+      { type: "CodeBlock", text: display, range: at(display) }
+    ]).length,
+    2
+  );
+});
+
+test("実行されない命令名は検出しない", () => {
+  assert.deepEqual(lint("row \\\\textbf literal \\string\\textbf \\ul@hook"), []);
+});
+
+test("エスケープされた改行の直後の命令は検出する", () => {
+  assert.equal(lint("a\\\\\\textbf{b}").length, 1);
 });
 
 test("マクロ定義の中の命令も検出する", () => {
@@ -62,6 +95,6 @@ for (const lang of ["ja", "en"]) {
     const lines = JSON.parse(result.stdout)[0]
       .messages.filter((message) => message.ruleId === "@being/no-bold-underline")
       .map((message) => message.line);
-    assert.deepEqual(lines, [2, 3]);
+    assert.deepEqual(lines, [2, 3, 4]);
   });
 }
