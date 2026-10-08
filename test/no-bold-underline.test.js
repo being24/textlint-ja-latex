@@ -93,7 +93,7 @@ for (const lang of ["ja", "en"]) {
     const result = spawnSync(process.execPath, [cli, "--lang", lang, "--format", "json", fixture], { encoding: "utf8" });
     assert.notEqual(result.status, 0);
     const lines = JSON.parse(result.stdout)[0]
-      .messages.filter((message) => message.ruleId === "@being/no-bold-underline")
+      .messages.filter((message) => message.ruleId === "no-bold-underline")
       .map((message) => message.line);
     assert.deepEqual(lines, [2, 3, 4]);
   });

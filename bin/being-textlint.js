@@ -27,6 +27,8 @@ const child = spawn(
     textlint,
     "--config",
     join(packageRoot, configFile),
+    "--rulesdir",
+    join(packageRoot, "rules"),
     "--rules-base-directory",
     rulesBaseDirectory,
     ...forwardedArgs
