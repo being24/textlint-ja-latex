@@ -15,6 +15,8 @@ npx being-textlint --mcp
 数式の `\mathbf`・`\boldsymbol` とコメント・`\verb`・verbatim 内は対象外である。
 申請書など太字・下線を使う文書には、このパッケージではなく個別の textlint 設定を使う。
 
+日英とも1文1行（`rules/one-sentence-per-line.js`）を検出する。直前の文と同じ行に続く文を報告し、`--fix` は提供しない。英語の略語（`Fig.`・`e.g.` など）は文末とみなさない。文ごとに改行した段落は報告されない。
+
 ## 英語文書の lint
 
 デフォルトは日本語向け設定（`textlintrc.json`）を使う。textlint には ESLint の `overrides` に相当するファイルパターンごとのルール切り替え機能が存在しないため（[textlint/textlint#709](https://github.com/textlint/textlint/issues/709) は未実装のまま）、英語文書には `--lang en` を明示的に指定し、英語向け設定（`textlintrc.en.json`）に切り替える。
